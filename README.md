@@ -1,7 +1,7 @@
 # dotnet-webapi
 
 ## Setup / Run Locally
-1. Update dotnet-webapi.json - changing the placeholder values
+1. Update `dotnet-webapi.json` - changing the placeholder values
 
 2. Create docker-compose files from the ECS json definition
 ```
