@@ -1,0 +1,94 @@
+{
+    "family": "dotnet-webapi",
+    "containerDefinitions": [
+        {
+            "name": "dotnet-webapi",
+            "image": "000000000000.dkr.ecr.ap-southeast-2.amazonaws.com/jmurphyau-ecr:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "dotnet-webapi-443-tcp",
+                    "containerPort": 443,
+                    "hostPort": 443,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                { "name": "DOMAIN", "value": "https-inside-ecs.jmurphyau.dev" },
+                { "name": "DELEGATED_DOMAIN", "value": "https-inside-ecs.jmurphyau.dev.domain-just-for-jmurphyau-acme-cert-renewal.com" },
+                { "name": "AWS_ACCESS_KEY_ID", "value": "XXXXXXXXXXXXXXXXXXXX" },
+                { "name": "AWS_SECRET_ACCESS_KEY", "value": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" },
+                { "name": "ASPNETCORE_URLS", "value": "https://+:443" },
+                { "name": "CERT_PATH", "value": "/opt/certs/cert.pem" },
+                { "name": "PRIVKEY_PATH", "value": "/opt/certs/privkey.pem" },
+                { "name": "FULLCHAIN_PATH", "value": "/opt/certs/fullchain.pem" },
+                { "name": "CHAIN_PATH", "value": "/opt/certs/chain.pem" }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [
+                {
+                    "sourceVolume": "acme",
+                    "containerPath": "/opt/acme",
+                    "readOnly": false
+                },
+                {
+                    "sourceVolume": "acme-data",
+                    "containerPath": "/opt/acme-data",
+                    "readOnly": false
+                },
+                {
+                    "sourceVolume": "certs",
+                    "containerPath": "/opt/certs",
+                    "readOnly": false
+                }
+            ],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/dotnet-webapi",
+                    "awslogs-region": "ap-southeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "executionRoleArn": "arn:aws:iam::000000000000:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "volumes": [
+        {
+            "name": "acme",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-00000000000000000",
+                "rootDirectory": "/acme"
+            }
+        },
+        {
+            "name": "acme-data",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-00000000000000000",
+                "rootDirectory": "/acme-data"
+            }
+        },
+        {
+            "name": "certs",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-00000000000000000",
+                "rootDirectory": "/certs/https-inside-ecs.jmurphyau.dev"
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}
