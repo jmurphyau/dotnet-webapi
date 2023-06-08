@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "dotnet-webapi",
-            "image": "000000000000.dkr.ecr.ap-southeast-2.amazonaws.com/jmurphyau-ecr:latest",
+            "image": "000000000000.dkr.ecr.ap-southeast-2.amazonaws.com/dotnet-webapi:latest",
             "cpu": 0,
             "portMappings": [
                 {
