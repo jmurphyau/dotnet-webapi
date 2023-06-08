@@ -6,22 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 var cert = Environment.GetEnvironmentVariable("FULLCHAIN_PATH");
 var privKey = Environment.GetEnvironmentVariable("PRIVKEY_PATH");
 
-Console.WriteLine("cert: "+cert);
-Console.WriteLine("privKey: "+privKey);
-
 if (cert != null && privKey != null) {
     builder.WebHost.ConfigureKestrel(kes => {
         kes.ConfigureHttpsDefaults(https => {
             https.SslProtocols = SslProtocols.Tls12;
             https.ServerCertificate = X509Certificate2.CreateFromPemFile(cert, privKey);
-            Console.WriteLine("https.ServerCertificate: "+https.ServerCertificate);
         });
     });
 }
 
 
 // Add services to the container.
-
 builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
 });
