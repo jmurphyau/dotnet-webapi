@@ -1,14 +1,21 @@
 # dotnet-webapi
 
 ## Setup / Run Locally
-1. Update `dotnet-webapi.json` - changing the placeholder values
 
-2. Create docker-compose files from the ECS json definition
+1. Build and push the docker image to your ECR
+```
+docker build --platform linux/amd64 -t dotnet-webapi -f Dockerfile .
+docker tag dotnet-webapi:latest 000000000000.dkr.ecr.ap-southeast-2.amazonaws.com/dotnet-webapi:latest
+docker push 000000000000.dkr.ecr.ap-southeast-2.amazonaws.com/dotnet-webapi:latest
+```
+2. Update `dotnet-webapi.json` - changing the placeholder values
+
+3. Create docker-compose files from the ECS json definition
 ```
 ecs-cli local create --task-def-file dotnet-webapi.json -o docker-compose-dotnet-webapi.yml
 ```
 
-3. Remove the volumes section from `docker-compose-dotnet-webapi.yml` and create a similar section in `docker-compose-dotnet-webapi.override.yml`. `docker-compose-dotnet-webapi.override.yml` should look something like this:
+4. Remove the volumes section from `docker-compose-dotnet-webapi.yml` and create a similar section in `docker-compose-dotnet-webapi.override.yml`. `docker-compose-dotnet-webapi.override.yml` should look something like this:
 ```
 version: "3.4"
 services:
@@ -27,13 +34,13 @@ services:
       target: /opt/certs
 ```
 
-4. Create the container (and the required network if you don't already have one)
+5. Create the container (and the required network if you don't already have one)
 ```
 docker network create ecs-local-network
 docker-compose -f docker-compose-dotnet-webapi.yml -f docker-compose-dotnet-webapi.override.yml create
 ```
 
-5. Start it
+6. Start it
 ```
 docker-compose -f docker-compose-dotnet-webapi.yml -f docker-compose-dotnet-webapi.override.yml start
 ```
